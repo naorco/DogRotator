@@ -22,7 +22,7 @@
     <key>EnvironmentVariables</key>
     <dict>
         <key>PYTHONPATH</key>
-        <string>/Users/nc/code/Rotator/venv/bin</string>
+        <string>/Users/nc/code/DogRotator/venv/bin</string>
     </dict>
 
     <key>RunAtLoad</key>
