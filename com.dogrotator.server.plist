@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.dogrotator.server</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/nc/code/DogWalkingManager/venv/bin/uvicorn</string>  <!-- Path to uvicorn -->
+        <string>server:app</string>               <!-- Your app -->
+        <string>--host</string>
+        <string>127.0.0.1</string>
+        <string>--port</string>
+        <string>8000</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/nc/code/DogWalkingManager</string>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PYTHONPATH</key>
+        <string>/Users/nc/code/DogWalkingManager/venv/bin</string>
+    </dict>
+
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+    <key>StandardOutPath</key>
+    <string>/tmp/dogrotator.log</string>
+    <key>StandardErrorPath</key>
+    <string>/tmp/dogrotator.err</string>
+</dict>
+</plist>
+
