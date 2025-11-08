@@ -51,7 +51,7 @@ async def init_db():
             await db.execute("INSERT INTO meta (k,v) VALUES ('saturday_current_index','0')")
             await db.execute("INSERT INTO meta (k,v) VALUES ('saturday_next_index','0')")
             await db.execute("INSERT INTO meta (k,v) VALUES ('dog_name','לאקי')")
-            await db.execute("INSERT INTO meta (k,v) VALUES ('dog_image','/Users/nc/code/DogWalkingManager/dog.jpeg')")
+            await db.execute("INSERT INTO meta (k,v) VALUES ('dog_image','/Users/nc/code/DogRotator/dog.jpeg')")
 
             await db.execute("INSERT INTO weekday_schedule (wd,name,status) VALUES ('0','עדן',False)")
             await db.execute("INSERT INTO weekday_schedule (wd,name,status) VALUES ('1','שקד',False)")
