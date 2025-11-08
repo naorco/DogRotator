@@ -8,7 +8,7 @@
 
     <key>ProgramArguments</key>
     <array>
-        <string>/Users/nc/code/DogWalkingManager/venv/bin/uvicorn</string>  <!-- Path to uvicorn -->
+        <string>/Users/nc/code/DogRotator/venv/bin/uvicorn</string>  <!-- Path to uvicorn -->
         <string>server:app</string>               <!-- Your app -->
         <string>--host</string>
         <string>127.0.0.1</string>
@@ -17,12 +17,12 @@
     </array>
 
     <key>WorkingDirectory</key>
-    <string>/Users/nc/code/DogWalkingManager</string>
+    <string>/Users/nc/code/DogRotator</string>
 
     <key>EnvironmentVariables</key>
     <dict>
         <key>PYTHONPATH</key>
-        <string>/Users/nc/code/DogWalkingManager/venv/bin</string>
+        <string>/Users/nc/code/Rotator/venv/bin</string>
     </dict>
 
     <key>RunAtLoad</key>
