@@ -42,7 +42,9 @@ async def init_db():
                 CREATE TABLE weekday_schedule (
                     wd INTEGER PRIMARY KEY,
                     name TEXT,
-                    status BOOL
+                    status BOOL,
+                    reporter TEXT,
+                    date TEXT
                 )
             ''')
             await db.execute("INSERT INTO children (id,name) VALUES ('0','עדן')")
@@ -72,9 +74,9 @@ async def get_meta_dict(db):
     return {r[0]: r[1] for r in rows}
 
 async def get_wd_scheduled(db):
-    cur = await db.execute('SELECT wd,name,status FROM weekday_schedule')
+    cur = await db.execute('SELECT wd,name,status,reporter,date FROM weekday_schedule')
     rows = await cur.fetchall()
-    return {int(r[0]): str(r[1]) for r in rows}, [bool(r[2]) for r in rows]
+    return {int(r[0]): str(r[1]) for r in rows}, [bool(r[2]) for r in rows],{int(r[0]):(str(r[3]),str(r[4])) for r in rows}
 
 # ---- קבועות ----
 # children_list = ['עדן', 'שקד']
@@ -109,13 +111,13 @@ async def build_shifts_table():
     table = {}
     weekdays = ['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת']
     async with aiosqlite.connect(DB) as db:
-        weekday_schedule,weekday_status = await get_wd_scheduled(db)
+        weekday_schedule,weekday_status,reporter = await get_wd_scheduled(db)
     
     for wd in range(0,7):
         if wd == 6: # Saturday
-            table[f'יום {weekdays[wd]}'] = (await get_saturday_name(),weekday_status[wd])
+            table[f'יום {weekdays[wd]}'] = (await get_saturday_name(),weekday_status[wd],reporter.get(wd,('-','-')))
         else:
-            table[f'יום {weekdays[wd]}'] = (weekday_schedule.get(wd,'-'),weekday_status[wd])
+            table[f'יום {weekdays[wd]}'] = (weekday_schedule.get(wd,'-'),weekday_status[wd],reporter.get(wd,('-','-')))
     # # שבת
     # table['שבת'] = get_saturday_name()
     return table
@@ -125,7 +127,7 @@ async def build_payload():
     async with aiosqlite.connect(DB) as db:
         children_list = await get_children_list(db)
         meta = await get_meta_dict(db)
-        weekday_schedule,weekday_status = await get_wd_scheduled(db)
+        weekday_schedule,weekday_status,_ = await get_wd_scheduled(db)
         today = get_today()
         weekday = get_weekday() # 0 = Monday
         weekday_ = (weekday+1)%7 # 0 = Sunday
@@ -133,10 +135,9 @@ async def build_payload():
         is_new_week = any(weekday_status[weekday_+1:]) if is_weekday else False
 
         if is_new_week:
-            weekday_status = [False]*7
             #update DB
-            for wd,status in enumerate(weekday_status):
-                await db.execute("UPDATE weekday_schedule SET status=? WHERE wd=?",(status,wd))
+            for wd,_ in enumerate(weekday_schedule):
+                await db.execute("UPDATE weekday_schedule SET status=?, reporter=?, date=? WHERE wd=?",(False,"","",wd))
 
 
             # meta['saturday_current_index'] = meta['saturday_next_index']
@@ -188,7 +189,7 @@ async def api_mark_done(name:str = Form(...)):
     async with aiosqlite.connect(DB) as db:
         children_list = await get_children_list(db)
         meta = await get_meta_dict(db)
-        weekday_schedule,weekday_status = await get_wd_scheduled(db)
+        weekday_schedule,weekday_status,_ = await get_wd_scheduled(db)
         if name not in children_list:
             raise HTTPException(status_code=400, detail='שם לא חוקי')
         wd = get_weekday()
@@ -206,7 +207,7 @@ async def api_mark_done(name:str = Form(...)):
         # ימי חול לא משנה את הרשימה
         # weekday_status[wd_] = True 
         #update status for today
-        await db.execute("UPDATE weekday_schedule SET status=? WHERE wd=?",(True,wd_))
+        await db.execute("UPDATE weekday_schedule SET status=?, reporter=?,date=? WHERE wd=?",(True,name,get_today().isoformat(),wd_))
         await db.commit()
         await broadcast_update()
         return {'status':'ok'}

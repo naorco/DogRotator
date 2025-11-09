@@ -4,4 +4,4 @@
 
 #!/bin/bash
 echo "🐶 Launching Dog Rotator client"
-python3 client.py --user='שקד'
+python client.py --user='שקד'

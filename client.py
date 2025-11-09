@@ -105,8 +105,8 @@ class MainWindow(QtWidgets.QWidget):
 
         # טבלת משמרות
         self.table = QtWidgets.QTableWidget()
-        self.table.setColumnCount(3)
-        self.table.setHorizontalHeaderLabels(["יום","תור מי","סטאטוס ביצוע"])
+        self.table.setColumnCount(5)
+        self.table.setHorizontalHeaderLabels(["יום","תור מי","סטאטוס ביצוע","מי דיווחה","מתי"])
         v.addWidget(self.table)
 
         self.setLayout(v)
@@ -136,10 +136,12 @@ class MainWindow(QtWidgets.QWidget):
         # טבלת משמרות
         table = payload.get('shifts_table',{})
         self.table.setRowCount(len(table))
-        for i,(day,(name,status)) in enumerate(table.items()):
+        for i,(day,(name,status,(reporter,report_time))) in enumerate(table.items()):
             self.table.setItem(i,0, QtWidgets.QTableWidgetItem(day))
             self.table.setItem(i,1, QtWidgets.QTableWidgetItem(name))
             self.table.setItem(i,2, QtWidgets.QTableWidgetItem("✅" if status else "❌"))
+            self.table.setItem(i,3, QtWidgets.QTableWidgetItem(reporter))
+            self.table.setItem(i,4, QtWidgets.QTableWidgetItem(report_time))
 
         # תמונה
         img_path = payload.get('dog_image','')
