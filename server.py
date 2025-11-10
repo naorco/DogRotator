@@ -47,6 +47,14 @@ async def init_db():
                     date TEXT
                 )
             ''')
+            await db.execute('''
+                CREATE TABLE history (
+                    date TEXT PRIMARY KEY,
+                    wd TEXT,
+                    name TEXT,
+                    reporter TEXT
+                )
+            ''')
             await db.execute("INSERT INTO children (id,name) VALUES ('0','עדן')")
             await db.execute("INSERT INTO children (id,name) VALUES ('1','שקד')")
 
